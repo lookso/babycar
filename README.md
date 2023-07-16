@@ -1,3 +1,35 @@
+
+kratos new babytree -r https://gitee.com/go-kratos/kratos-layout.git
+
+$ cd babytree
+$ go generate ./...
+$ go build -o ./bin/ ./...
+$ ./bin/babytree -conf ./configs
+
+添加pb文件
+kratos proto add api/helloworld/v1/student.proto
+
+
+生成 proto 对应代码#
+通过 make 命令生成：
+
+make api
+或者通过 kratos cli 生成：
+
+kratos proto client api/helloworld/v1/student.proto
+
+生成 Service 代码#
+通过 proto 文件，直接生成对应的 Service 代码。使用 -t 指定生成目录：
+
+kratos proto server api/helloworld/v1/student.proto -t internal/service
+
+参考地址:
+https://www.cnblogs.com/jiujuan/p/16331967.html
+
+https://xie.infoq.cn/article/64641cdf2e6dcd91c1c43971c
+
+
+
 # Kratos Project Template
 
 ## Install Kratos
@@ -48,4 +80,5 @@ docker build -t <your-docker-image-name> .
 # run
 docker run --rm -p 8000:8000 -p 9000:9000 -v </path/to/your/configs>:/data/conf <your-docker-image-name>
 ```
+
 
