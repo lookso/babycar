@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package api.car.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+
+option go_package = "babycare/api/car/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.car.v1";
+
+service Car {
+	rpc CreateUser (CreateUserRequest) returns (UserInfoReply);
+	rpc ListUser (ListUserRequest) returns (ListUserReply);
+	rpc SendJson (SendJsonRequest) returns (SendJsonReply);
+
+	rpc GetUser (GetUserRequest) returns (GetUserReply) {
+		option (google.api.http) = {
+			get: "/getuser/{id}",
+		};
+	}
+
+	rpc AuthToken (AuthTokenRequest) returns (AuthTokenReply) {
+		option (google.api.http) = {
+			post: "/oauth/token",
+			body: "*"
+		};
+	}
+
+	rpc GetWechatContacts (GetWechatContactsRequest) returns (GetWechatContactsReply) {
+		option (google.api.http) = {
+			get: "/wechat/contacts",
+		};
+	}
+
+	rpc HealthCheck (google.protobuf.Value) returns (HealthReply) {
+		option (google.api.http) = {
+			get: "/health",
+		};
+	}
+}
+
+message GetWechatContactsRequest {
+	string access_token = 1 [json_name = "access_token"];
+	string app_id = 2 [json_name = "app_id"];
+	string rel_wxid = 3 [json_name = "rel_wxid"];
+	string start_wxid = 4 [json_name = "start_wxid"];
+	uint32 start_make_time = 5 [json_name = "start_make_time"];
+	uint32 end_make_time = 6 [json_name = "end_make_time"];
+	int32 page = 7;
+	int32 page_size = 8 [json_name = "page_size"];
+}
+
+message GetWechatContactsReply {
+	message Data {
+		int32 id = 1;
+		string wxid = 3;
+		string avatar = 4;
+		string nickname = 5;
+		uint32 bitval = 6;
+	}
+	message Pager {
+		int32 page = 1;
+		int32 per_page = 2 [json_name = "perPage"];
+		int32 num_records = 3 [json_name = "numRecords"];
+		int32 num_pages = 4 [json_name = "numPages"];
+	}
+	int32 errcode = 1;
+	string message = 2;
+	Pager pager = 3;
+	repeated Data data = 4;
+}
+
+
+message AuthTokenRequest {
+	string app_id = 1 [json_name = "app_id"];
+	string app_secret = 2 [json_name = "app_secret"];
+	string grand_type = 3 [json_name = "grand_type"];
+}
+
+message AuthTokenReply {
+	int32 errcode = 1;
+	string errmsg = 2;
+	message Data {
+		string access_token = 1 [json_name = "access_token"];
+		int32 expires_in = 2 [json_name = "expires_in"];
+	}
+	Data data = 3;
+}
+
+
+// 创建用户所需字段
+message  CreateUserRequest{
+	string nickName = 1;
+	string password = 2;
+	string mobile = 3;
+}
+
+// 返回用户信息
+message UserInfoReply{
+	int64 id = 1;
+	string password = 2;
+	string mobile = 3;
+	string nickName = 4;
+	int64 birthday = 5;
+	string gender = 6;
+	int32 role = 7;
+}
+
+message GetUserRequest {
+	int64 id = 1;
+}
+message GetUserReply {
+	int64 id = 1;
+}
+
+message ListUserRequest {}
+message ListUserReply {}
+
+message SendJsonRequest {
+	string UserID = 1;
+	google.protobuf.Struct Details = 2;
+}
+
+message SendJsonReply {
+	string Response = 1;
+}
+
+message HealthReply {
+	string message = 1;
+}
