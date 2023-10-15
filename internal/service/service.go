@@ -1,9 +1,10 @@
 package service
 
 import (
-	"babycare/internal/service/api"
+	"babycare/internal/service/baby"
+	"babycare/internal/service/car"
 	"github.com/google/wire"
 )
 
 // ProviderSet is service providers.
-var ProviderSet = wire.NewSet(api.NewService)
+var ProviderSet = wire.NewSet(car.NewCarService,baby.NewBabyService)

@@ -7,11 +7,13 @@
 package main
 
 import (
+	"babycare/internal/biz/baby"
 	"babycare/internal/biz/car"
 	"babycare/internal/conf"
 	"babycare/internal/data"
 	"babycare/internal/server"
-	"babycare/internal/service/api"
+	baby2 "babycare/internal/service/baby"
+	car2 "babycare/internal/service/car"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -34,9 +36,12 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	}
 	iCarRepo := data.NewCarData(dataData, logger)
 	carBiz := car.NewCarBiz(iCarRepo, logger)
-	service := api.NewService(carBiz, logger)
-	grpcServer := server.NewGRPCServer(confServer, service, logger)
-	httpServer := server.NewHTTPServer(confServer, service, logger)
+	carService := car2.NewCarService(carBiz, logger)
+	grpcServer := server.NewGRPCServer(confServer, carService, logger)
+	iBabyRepo := data.NewBabyData(dataData, logger)
+	babyBiz := baby.NewBabyBiz(iBabyRepo, logger)
+	babyService := baby2.NewBabyService(babyBiz, logger)
+	httpServer := server.NewHTTPServer(confServer, carService, babyService, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()

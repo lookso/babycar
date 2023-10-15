@@ -1,9 +1,11 @@
 package server
 
 import (
-	v1 "babycare/api/car/v1"
+	babyApiV1 "babycare/api/baby/v1"
+	carApiV1 "babycare/api/car/v1"
 	"babycare/internal/conf"
-	"babycare/internal/service/api"
+	"babycare/internal/service/baby"
+	"babycare/internal/service/car"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
@@ -11,7 +13,7 @@ import (
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, carService *api.Service, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server, carService *car.CarService, babyService *baby.BabyService, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -28,9 +30,10 @@ func NewHTTPServer(c *conf.Server, carService *api.Service, logger log.Logger) *
 	}
 	srv := http.NewServer(opts...)
 
-	v1.RegisterCarHTTPServer(srv, carService)
+	carApiV1.RegisterCarHTTPServer(srv, carService)
+	babyApiV1.RegisterBabyHTTPServer(srv, babyService)
 
 	router := srv.Route("/")
-	router.GET("v1/hello", carService.Hello)
+	router.GET("v1/download_comment", carService.DownloadComment)
 	return srv
 }

@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package api.baby.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+
+option go_package = "babycare/api/baby/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.baby.v1";
+
+service Baby {
+
+  rpc GetUser (GetUserRequest) returns (GetUserReply) {
+    option (google.api.http) = {
+      get: "/{app_id}",
+    };
+  }
+}
+message GetUserRequest {
+  string app_id = 2 [json_name = "app_id"];
+}
+message GetUserReply {
+  string access_token = 1 [json_name = "access_token"];
+  string app_id = 2 [json_name = "app_id"];
+}

@@ -3,7 +3,7 @@
 
 openapi: 3.0.3
 info:
-    title: Car API
+    title: ""
     version: 0.0.1
 paths:
     /getuser/{id}:
@@ -134,8 +134,33 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.car.v1.GetWechatContactsReply'
+    /{app_id}:
+        get:
+            tags:
+                - Baby
+            operationId: Baby_GetUser
+            parameters:
+                - name: app_id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.baby.v1.GetUserReply'
 components:
     schemas:
+        api.baby.v1.GetUserReply:
+            type: object
+            properties:
+                access_token:
+                    type: string
+                app_id:
+                    type: string
         api.car.v1.AuthTokenReply:
             type: object
             properties:
@@ -221,4 +246,5 @@ components:
         google.protobuf.Value:
             description: Represents a dynamically typed value which can be either null, a number, a string, a boolean, a recursive struct value, or a list of values.
 tags:
+    - name: Baby
     - name: Car

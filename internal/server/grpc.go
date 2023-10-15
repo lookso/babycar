@@ -3,7 +3,7 @@ package server
 import (
 	v1 "babycare/api/car/v1"
 	"babycare/internal/conf"
-	"babycare/internal/service/api"
+	"babycare/internal/service/car"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
@@ -11,7 +11,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, greeter *api.Service, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Server, carService *car.CarService, logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -27,6 +27,6 @@ func NewGRPCServer(c *conf.Server, greeter *api.Service, logger log.Logger) *grp
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterCarServer(srv, greeter)
+	v1.RegisterCarServer(srv, carService)
 	return srv
 }
