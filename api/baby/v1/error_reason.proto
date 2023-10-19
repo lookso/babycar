@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package api.baby;
+import "errors/errors.proto";
+
+
+option go_package = "babycare/api/baby/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.baby.v1";
+option objc_class_prefix = "APIBabyErrors";
+
+enum ErrorReason {
+	option (errors.default_code) = 500;
+	// 命名规范 服务名称_错误  error.code 尽量使用http.code来标识且符合code码含义, 需要备注什么错误，方便定位
+	DATA_SERVICE_DATA_NOT_FOUND = 0 [(errors.code) = 404];
+
+}
+
