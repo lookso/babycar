@@ -27,16 +27,13 @@ type BabyHTTPServer interface {
 
 func RegisterBabyHTTPServer(s *http.Server, srv BabyHTTPServer) {
 	r := s.Route("/")
-	r.GET("/{app_id}", _Baby_GetUser1_HTTP_Handler(srv))
+	r.GET("/baby/getuser", _Baby_GetUser1_HTTP_Handler(srv))
 }
 
 func _Baby_GetUser1_HTTP_Handler(srv BabyHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GetUserRequest
 		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationBabyGetUser)
@@ -66,7 +63,7 @@ func NewBabyHTTPClient(client *http.Client) BabyHTTPClient {
 
 func (c *BabyHTTPClientImpl) GetUser(ctx context.Context, in *GetUserRequest, opts ...http.CallOption) (*GetUserReply, error) {
 	var out GetUserReply
-	pattern := "/{app_id}"
+	pattern := "/baby/getuser"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationBabyGetUser))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -4,6 +4,7 @@ package api.baby.v1;
 
 import "google/api/annotations.proto";
 import "google/protobuf/struct.proto";
+import "validate/validate.proto";
 
 option go_package = "babycare/api/baby/v1;v1";
 option java_multiple_files = true;
@@ -13,14 +14,43 @@ service Baby {
 
   rpc GetUser (GetUserRequest) returns (GetUserReply) {
     option (google.api.http) = {
-      get: "/{app_id}",
+      get: "/baby/getuser",
     };
   }
 }
+
 message GetUserRequest {
-  string app_id = 2 [json_name = "app_id"];
+  int64 id = 1 [json_name = "id", (validate.rules).int64.gt = 0];
+  google.protobuf.Struct name = 2;
 }
+
+message Person {
+  string name = 1;
+  int32 age = 2;
+}
+
+// 定义一个映射
+message Human {
+  map<string, Person> people = 1;
+}
+
+// 定义一个数组结构体
+message People {
+  repeated Person persons = 1;
+}
+
+// 定义一个数组映射
+message PeopleListArrMap {
+  map<string, People> people = 1;
+}
+
 message GetUserReply {
   string access_token = 1 [json_name = "access_token"];
   string app_id = 2 [json_name = "app_id"];
+  google.protobuf.Struct name = 3;
+  Person person = 4 [json_name = "person"];
+  People people = 5 [json_name = "people"];
+  Human human = 6 [json_name = "human"];
+  PeopleListArrMap people_list = 7 [json_name = "people_list"];
 }
+

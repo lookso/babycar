@@ -4,8 +4,10 @@ go 1.18
 
 require (
 	github.com/360EntSecGroup-Skylar/excelize v1.4.1
+	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/go-kratos/kratos/v2 v2.6.2
 	github.com/google/wire v0.5.0
+	github.com/spf13/cast v1.5.1
 	go.uber.org/automaxprocs v1.5.1
 	google.golang.org/genproto v0.0.0-20220524023933-508584e28198
 	google.golang.org/grpc v1.46.2
@@ -29,7 +31,6 @@ require (
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/kr/text v0.2.0 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	go.opentelemetry.io/otel v1.7.0 // indirect

@@ -6,6 +6,24 @@ info:
     title: ""
     version: 0.0.1
 paths:
+    /baby/getuser:
+        get:
+            tags:
+                - Baby
+            operationId: Baby_GetUser
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.baby.v1.GetUserReply'
     /getuser/{id}:
         get:
             tags:
@@ -134,24 +152,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.car.v1.GetWechatContactsReply'
-    /{app_id}:
-        get:
-            tags:
-                - Baby
-            operationId: Baby_GetUser
-            parameters:
-                - name: app_id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.baby.v1.GetUserReply'
 components:
     schemas:
         api.baby.v1.GetUserReply:
@@ -161,6 +161,48 @@ components:
                     type: string
                 app_id:
                     type: string
+                name:
+                    type: object
+                person:
+                    $ref: '#/components/schemas/api.baby.v1.Person'
+                people:
+                    $ref: '#/components/schemas/api.baby.v1.People'
+                human:
+                    $ref: '#/components/schemas/api.baby.v1.Human'
+                people_list:
+                    $ref: '#/components/schemas/api.baby.v1.PeopleListArrMap'
+        api.baby.v1.Human:
+            type: object
+            properties:
+                people:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/api.baby.v1.Person'
+            description: 定义一个映射
+        api.baby.v1.People:
+            type: object
+            properties:
+                persons:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.baby.v1.Person'
+            description: 定义一个数组结构体
+        api.baby.v1.PeopleListArrMap:
+            type: object
+            properties:
+                people:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/api.baby.v1.People'
+            description: 定义一个数组映射
+        api.baby.v1.Person:
+            type: object
+            properties:
+                name:
+                    type: string
+                age:
+                    type: integer
+                    format: int32
         api.car.v1.AuthTokenReply:
             type: object
             properties:
