@@ -11,7 +11,11 @@ option java_package = "api.car.v1";
 
 service Car {
 	rpc CreateUser (CreateUserRequest) returns (UserInfoReply);
-	rpc ListUser (ListUserRequest) returns (ListUserReply);
+	rpc ListUser (ListUserRequest) returns (ListUserReply){
+		option (google.api.http) = {
+			get: "/listuser",
+		};
+	}
 	rpc SendJson (SendJsonRequest) returns (SendJsonReply);
 
 	rpc GetUser (GetUserRequest) returns (GetUserReply) {
@@ -114,7 +118,14 @@ message GetUserReply {
 	int64 id = 1;
 }
 
-message ListUserRequest {}
+message ListUserRequest {
+		//oneof 关键字在 Protocol Buffers 中用于定义一个字段，该字段可以具有多种可能的类型。它允许您定义一组字段，其中只能有一个字段被设置
+		oneof UserFilter {
+			string name = 1;
+			int32 age = 2;
+			bool is_active = 3;
+		}
+}
 message ListUserReply {}
 
 message SendJsonRequest {

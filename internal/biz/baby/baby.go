@@ -3,8 +3,10 @@ package baby
 import (
 	pb "babycare/api/baby/v1"
 	"context"
+	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/spf13/cast"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -28,6 +30,15 @@ func (s *BabyBiz) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetU
 		Name: "test",
 		Age:  18,
 	}
+	// json.Marshal 无法正确处理 Protocol Buffers 的一些特性，如 oneof 字段，或者特殊的 Well-Known Types，如 Timestamp、Duration、Struct 等
+	// 将 Person 消息编码为 JSON
+	jsonBytes, err := protojson.Marshal(person)
+	if err != nil {
+		fmt.Println("Error marshaling to JSON:", err)
+		return resp, err
+	}
+	fmt.Println(jsonBytes,string(jsonBytes))
+
 	resp = &pb.GetUserReply{
 		AppId: cast.ToString(id),
 		Name: &structpb.Struct{

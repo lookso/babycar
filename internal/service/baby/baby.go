@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type BabyService struct {
@@ -20,6 +21,10 @@ func NewBabyService(babyBiz *baby.BabyBiz, logger log.Logger) *BabyService {
 		babyBiz: babyBiz,
 		log:     log.NewHelper(log.With(logger, "module", "service/api")),
 	}
+}
+func (s *BabyService) Example(ctx context.Context,req *pb.Null) (*emptypb.Empty, error) {
+
+	return &emptypb.Empty{}, nil
 }
 func (s *BabyService) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserReply, error) {
 	if header, ok := transport.FromServerContext(ctx); ok {

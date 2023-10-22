@@ -2,3 +2,4 @@
 ./cmd/babycar/
 ./bin
 ./logs
+./cmd/babycar/comments.xlsx

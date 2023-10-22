@@ -4,6 +4,7 @@ import (
 	"babycare/internal/conf"
 	"time"
 
+	"babycare/pkg/zlog"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	"gorm.io/driver/mysql"
@@ -12,12 +13,12 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewCarData,NewBabyData, NewEngineDbRw,wire.Struct(new(DataProviderCollection), "*"))
+var ProviderSet = wire.NewSet(NewData, NewCarData, NewBabyData, NewEngineDbRw, wire.Struct(new(DataProviderCollection), "*"))
 
 // Data . .
 type Data struct {
-	EngineDb *gorm.DB
-	Log      *log.Helper
+	DB  *gorm.DB
+	Log *log.Helper
 }
 
 type DataProviderCollection struct {
@@ -31,7 +32,7 @@ func NewEngineDbRw(conf *conf.Data, logger log.Logger) EngineDb {
 	db, err := gorm.Open(mysql.Open(conf.Database.Source), &gorm.Config{
 		SkipDefaultTransaction: true,
 		PrepareStmt:            true,
-		//Logger:                 log.NewGorm(logger),
+		Logger:                 zlog.NewGorm(logger),
 	})
 	if err != nil {
 		logDb.Fatalf("failed opening connection to mysql: %v", err)
@@ -73,7 +74,7 @@ func NewData(c *conf.Data, dataProvider *DataProviderCollection, logger log.Logg
 	}
 
 	return &Data{
-		EngineDb: ormEngineDb,
-		Log:      logData,
+		DB:  ormEngineDb,
+		Log: logData,
 	}, cleanup, nil
 }

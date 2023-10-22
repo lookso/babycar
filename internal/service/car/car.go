@@ -6,8 +6,10 @@ import (
 	"babycare/internal/pkg"
 	"bytes"
 	"context"
+	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/structpb"
 	"strconv"
 )
@@ -39,6 +41,28 @@ func (s *CarService) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.G
 	return &pb.GetUserReply{Id: id}, nil
 }
 func (s *CarService) ListUser(ctx context.Context, req *pb.ListUserRequest) (*pb.ListUserReply, error) {
+
+	// 创建一个 SampleMessage 消息，并设置 test_oneof 字段为 name
+	msg :=&pb.ListUserRequest{
+		UserFilter: &pb.ListUserRequest_Name{
+			Name: "Alice",
+		},
+	}
+	b,_:=protojson.Marshal(msg)
+	fmt.Println(string(b))
+
+	// 检查 test_oneof 字段的类型
+	switch v := msg.UserFilter.(type) {
+	case *pb.ListUserRequest_Name:
+		fmt.Println("Name:", v.Name)
+	case *pb.ListUserRequest_Age:
+		fmt.Println("Age:", v.Age)
+	case *pb.ListUserRequest_IsActive:
+		fmt.Println("IsActive:", v.IsActive)
+	default:
+		fmt.Println("Unknown type")
+	}
+
 	return &pb.ListUserReply{}, nil
 }
 func (s *CarService) SendJson(ctx context.Context, req *pb.SendJsonRequest) (*pb.SendJsonReply, error) {

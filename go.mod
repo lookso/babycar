@@ -8,6 +8,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.6.2
 	github.com/google/wire v0.5.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
+	github.com/pkg/errors v0.9.1
 	github.com/spf13/cast v1.5.1
 	go.uber.org/automaxprocs v1.5.1
 	go.uber.org/zap v1.26.0

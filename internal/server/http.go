@@ -4,6 +4,7 @@ import (
 	babyApiV1 "babycare/api/baby/v1"
 	carApiV1 "babycare/api/car/v1"
 	"babycare/internal/conf"
+	"babycare/internal/server/middleware"
 	"babycare/internal/service/baby"
 	"babycare/internal/service/car"
 
@@ -17,6 +18,7 @@ func NewHTTPServer(c *conf.Server, carService *car.CarService, babyService *baby
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
+			middleware.AddTraceToRequest(),
 		),
 	}
 	if c.Http.Network != "" {

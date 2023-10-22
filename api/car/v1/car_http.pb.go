@@ -24,20 +24,42 @@ const OperationCarAuthToken = "/api.car.v1.Car/AuthToken"
 const OperationCarGetUser = "/api.car.v1.Car/GetUser"
 const OperationCarGetWechatContacts = "/api.car.v1.Car/GetWechatContacts"
 const OperationCarHealthCheck = "/api.car.v1.Car/HealthCheck"
+const OperationCarListUser = "/api.car.v1.Car/ListUser"
 
 type CarHTTPServer interface {
 	AuthToken(context.Context, *AuthTokenRequest) (*AuthTokenReply, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserReply, error)
 	GetWechatContacts(context.Context, *GetWechatContactsRequest) (*GetWechatContactsReply, error)
 	HealthCheck(context.Context, *structpb.Value) (*HealthReply, error)
+	ListUser(context.Context, *ListUserRequest) (*ListUserReply, error)
 }
 
 func RegisterCarHTTPServer(s *http.Server, srv CarHTTPServer) {
 	r := s.Route("/")
+	r.GET("/listuser", _Car_ListUser0_HTTP_Handler(srv))
 	r.GET("/getuser/{id}", _Car_GetUser0_HTTP_Handler(srv))
 	r.POST("/oauth/token", _Car_AuthToken0_HTTP_Handler(srv))
 	r.GET("/wechat/contacts", _Car_GetWechatContacts0_HTTP_Handler(srv))
 	r.GET("/health", _Car_HealthCheck0_HTTP_Handler(srv))
+}
+
+func _Car_ListUser0_HTTP_Handler(srv CarHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in ListUserRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationCarListUser)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ListUser(ctx, req.(*ListUserRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*ListUserReply)
+		return ctx.Result(200, reply)
+	}
 }
 
 func _Car_GetUser0_HTTP_Handler(srv CarHTTPServer) func(ctx http.Context) error {
@@ -124,6 +146,7 @@ type CarHTTPClient interface {
 	GetUser(ctx context.Context, req *GetUserRequest, opts ...http.CallOption) (rsp *GetUserReply, err error)
 	GetWechatContacts(ctx context.Context, req *GetWechatContactsRequest, opts ...http.CallOption) (rsp *GetWechatContactsReply, err error)
 	HealthCheck(ctx context.Context, req *structpb.Value, opts ...http.CallOption) (rsp *HealthReply, err error)
+	ListUser(ctx context.Context, req *ListUserRequest, opts ...http.CallOption) (rsp *ListUserReply, err error)
 }
 
 type CarHTTPClientImpl struct {
@@ -178,6 +201,19 @@ func (c *CarHTTPClientImpl) HealthCheck(ctx context.Context, in *structpb.Value,
 	pattern := "/health"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationCarHealthCheck))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *CarHTTPClientImpl) ListUser(ctx context.Context, in *ListUserRequest, opts ...http.CallOption) (*ListUserReply, error) {
+	var out ListUserReply
+	pattern := "/listuser"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationCarListUser))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

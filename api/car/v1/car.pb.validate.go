@@ -1008,6 +1008,47 @@ func (m *ListUserRequest) validate(all bool) error {
 
 	var errors []error
 
+	switch v := m.UserFilter.(type) {
+	case *ListUserRequest_Name:
+		if v == nil {
+			err := ListUserRequestValidationError{
+				field:  "UserFilter",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for Name
+	case *ListUserRequest_Age:
+		if v == nil {
+			err := ListUserRequestValidationError{
+				field:  "UserFilter",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for Age
+	case *ListUserRequest_IsActive:
+		if v == nil {
+			err := ListUserRequestValidationError{
+				field:  "UserFilter",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for IsActive
+	default:
+		_ = v // ensures v is used
+	}
+
 	if len(errors) > 0 {
 		return ListUserRequestMultiError(errors)
 	}

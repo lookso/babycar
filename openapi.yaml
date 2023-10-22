@@ -67,6 +67,32 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.car.v1.HealthReply'
+    /listuser:
+        get:
+            tags:
+                - Car
+            operationId: Car_ListUser
+            parameters:
+                - name: name
+                  in: query
+                  schema:
+                    type: string
+                - name: age
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: isActive
+                  in: query
+                  schema:
+                    type: boolean
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.car.v1.ListUserReply'
     /oauth/token:
         post:
             tags:
@@ -294,6 +320,9 @@ components:
             properties:
                 message:
                     type: string
+        api.car.v1.ListUserReply:
+            type: object
+            properties: {}
         google.protobuf.Value:
             description: Represents a dynamically typed value which can be either null, a number, a string, a boolean, a recursive struct value, or a list of values.
 tags:
