@@ -35,6 +35,240 @@ var (
 	_ = sort.Sort
 )
 
+// Validate checks the field values on Null with the rules defined in the proto
+// definition for this message. If any rules are violated, the first error
+// encountered is returned, or nil if there are no violations.
+func (m *Null) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Null with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in NullMultiError, or nil if none found.
+func (m *Null) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Null) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if len(errors) > 0 {
+		return NullMultiError(errors)
+	}
+
+	return nil
+}
+
+// NullMultiError is an error wrapping multiple validation errors returned by
+// Null.ValidateAll() if the designated constraints aren't met.
+type NullMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m NullMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m NullMultiError) AllErrors() []error { return m }
+
+// NullValidationError is the validation error returned by Null.Validate if the
+// designated constraints aren't met.
+type NullValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e NullValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e NullValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e NullValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e NullValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e NullValidationError) ErrorName() string { return "NullValidationError" }
+
+// Error satisfies the builtin error interface
+func (e NullValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sNull.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = NullValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = NullValidationError{}
+
+// Validate checks the field values on RecommendListReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *RecommendListReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on RecommendListReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// RecommendListReplyMultiError, or nil if none found.
+func (m *RecommendListReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *RecommendListReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetPersons() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, RecommendListReplyValidationError{
+						field:  fmt.Sprintf("Persons[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, RecommendListReplyValidationError{
+						field:  fmt.Sprintf("Persons[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RecommendListReplyValidationError{
+					field:  fmt.Sprintf("Persons[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return RecommendListReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// RecommendListReplyMultiError is an error wrapping multiple validation errors
+// returned by RecommendListReply.ValidateAll() if the designated constraints
+// aren't met.
+type RecommendListReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RecommendListReplyMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RecommendListReplyMultiError) AllErrors() []error { return m }
+
+// RecommendListReplyValidationError is the validation error returned by
+// RecommendListReply.Validate if the designated constraints aren't met.
+type RecommendListReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e RecommendListReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e RecommendListReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e RecommendListReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e RecommendListReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e RecommendListReplyValidationError) ErrorName() string {
+	return "RecommendListReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e RecommendListReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sRecommendListReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = RecommendListReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = RecommendListReplyValidationError{}
+
 // Validate checks the field values on GetUserRequest with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.

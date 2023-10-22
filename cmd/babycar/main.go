@@ -1,8 +1,10 @@
 package main
 
 import (
+	"babycare/pkg/zlog"
 	"flag"
 	"os"
+	"time"
 
 	"babycare/internal/conf"
 
@@ -49,15 +51,7 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 
 func main() {
 	flag.Parse()
-	logger := log.With(log.NewStdLogger(os.Stdout),
-		"ts", log.DefaultTimestamp,
-		"caller", log.DefaultCaller,
-		"service.id", id,
-		"service.name", Name,
-		"service.version", Version,
-		"trace.id", tracing.TraceID(),
-		"span.id", tracing.SpanID(),
-	)
+
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),
@@ -73,6 +67,19 @@ func main() {
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
+
+	zlog.Init(Name, bc.Log.Filename, int(bc.Log.MaxSize), int(bc.Log.MaxBackup), int(bc.Log.MaxAge), bc.Log.Compress)
+	defer zlog.Sync()
+	logger := log.With(zlog.NewZapLogger(zlog.STDInstance()),
+		"ts", log.Timestamp(time.RFC3339Nano),
+		"caller", log.DefaultCaller,
+		"service.id", id,
+		"service.name", Name,
+		"service.version", Version,
+		"trace_id", tracing.TraceID(),
+		"span_id", tracing.SpanID(),
+		// 可以添加额外k,v,满足基本日志需求
+	)
 
 	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
 	if err != nil {

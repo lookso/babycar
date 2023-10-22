@@ -5,6 +5,7 @@ package api.baby.v1;
 import "google/api/annotations.proto";
 import "google/protobuf/struct.proto";
 import "validate/validate.proto";
+import "google/protobuf/empty.proto";
 
 option go_package = "babycare/api/baby/v1;v1";
 option java_multiple_files = true;
@@ -12,11 +13,23 @@ option java_package = "api.baby.v1";
 
 service Baby {
 
+  rpc Example (Null) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/v1/baby/example"
+    };
+  };
+
   rpc GetUser (GetUserRequest) returns (GetUserReply) {
     option (google.api.http) = {
-      get: "/baby/getuser",
+      get: "/v1/baby/getuser",
     };
   }
+}
+
+message Null {}
+
+message RecommendListReply {
+  repeated Person persons = 1 [json_name = "list"];
 }
 
 message GetUserRequest {

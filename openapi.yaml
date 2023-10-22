@@ -6,24 +6,6 @@ info:
     title: ""
     version: 0.0.1
 paths:
-    /baby/getuser:
-        get:
-            tags:
-                - Baby
-            operationId: Baby_GetUser
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: integer
-                    format: int64
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.baby.v1.GetUserReply'
     /getuser/{id}:
         get:
             tags:
@@ -103,6 +85,33 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.car.v1.AuthTokenReply'
+    /v1/baby/example:
+        get:
+            tags:
+                - Baby
+            operationId: Baby_Example
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /v1/baby/getuser:
+        get:
+            tags:
+                - Baby
+            operationId: Baby_GetUser
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.baby.v1.GetUserReply'
     /wechat/contacts:
         get:
             tags:
