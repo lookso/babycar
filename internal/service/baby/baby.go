@@ -22,13 +22,12 @@ func NewBabyService(babyBiz *baby.BabyBiz, logger log.Logger) *BabyService {
 		log:     log.NewHelper(log.With(logger, "module", "service/api")),
 	}
 }
-func (s *BabyService) Example(ctx context.Context,req *pb.Null) (*emptypb.Empty, error) {
-
+func (s *BabyService) Example(ctx context.Context, req *pb.Null) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, nil
 }
 func (s *BabyService) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserReply, error) {
 	if header, ok := transport.FromServerContext(ctx); ok {
-		appId := header.RequestHeader().Get("x-app-id")
+		appId := header.RequestHeader().Get("X-App-Id")
 		//s.log.Infof("appId:%s", appId)
 
 		fmt.Println("appId", appId)
