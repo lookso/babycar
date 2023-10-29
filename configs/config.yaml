@@ -11,6 +11,7 @@ data:
     source: root:123456@tcp(127.0.0.1:3306)/tools
     max_idle_conns: 1
     max_open_conns: 2
+    debug: true
   redis:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s
@@ -21,3 +22,21 @@ log:
   max_backup: 5
   max_age: 10
   compress: true
+error:
+  default: "服务错误" #通用错误术语
+  handle:
+    "GET#/api/v1/demo": #特殊api 特殊error_reason错误术语提示，只需添加配置即可实时生效
+      error_messages:
+        - error_reason: "error_01"
+          message: "哎呀1"
+        - error_reason: "error_11"
+          message: "嗨1"
+    "POST#/api/v1/demo2":
+      error_messages:
+        - error_reason: "error_02"
+          message: "changed"
+        - error_reason: "error_1"
+          message: "嗨"
+
+
+

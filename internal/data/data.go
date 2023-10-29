@@ -34,6 +34,9 @@ func NewEngineDbRw(conf *conf.Data, logger log.Logger) EngineDb {
 		PrepareStmt:            true,
 		Logger:                 zlog.NewGorm(logger),
 	})
+	if conf.Database.GetDebug() {
+		db = db.Debug()
+	}
 	if err != nil {
 		logDb.Fatalf("failed opening connection to mysql: %v", err)
 	}

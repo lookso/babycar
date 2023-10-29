@@ -9,6 +9,7 @@ message Bootstrap {
   Server server = 1;
   Data data = 2;
   Log log = 3;
+  ErrorHandle error = 4;
 }
 
 message Server {
@@ -32,6 +33,7 @@ message Data {
     string source = 2;
     int64 max_idle_conns = 3;
     int64 max_open_conns = 4;
+    bool debug = 5;
   }
   message Redis {
     string network = 1;
@@ -49,4 +51,16 @@ message Log {
   int32 max_backup = 3;
   int32 max_age = 4;
   bool compress = 5;
+}
+
+message ErrorHandle {
+  message ErrorMessages {
+    repeated ErrorMessage error_messages = 1;
+  }
+  message ErrorMessage {
+    string error_reason = 1;
+    string message = 2;
+  }
+  map<string, ErrorMessages> handle = 1;
+  string default = 2;
 }

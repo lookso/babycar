@@ -25,7 +25,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
+func wireApp(confServer *conf.Server, confData *conf.Data, errorHandle *conf.ErrorHandle, logger log.Logger) (*kratos.App, func(), error) {
 	engineDb := data.NewEngineDbRw(confData, logger)
 	dataProviderCollection := &data.DataProviderCollection{
 		EngineDb: engineDb,
@@ -41,7 +41,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	iBabyRepo := data.NewBabyData(dataData, logger)
 	babyBiz := baby.NewBabyBiz(iBabyRepo, logger)
 	babyService := baby2.NewBabyService(babyBiz, logger)
-	httpServer := server.NewHTTPServer(confServer, carService, babyService, logger)
+	httpServer := server.NewHTTPServer(confServer, confData, errorHandle, carService, babyService, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()

@@ -17,10 +17,10 @@ func NewBabyData(data *Data, logger log.Logger) babyBiz.IBabyRepo {
 
 // 对user.IUser接口的实现
 func (u *BabyData) GeUserId(ctx context.Context, id int64) (int64, error) {
-	if id<0{
-		return 0,nil
-	}else{
-		return 100,nil
+	if id < 0 {
+		return 0, nil
+	} else {
+		return 100, nil
 	}
 	return id, nil
 }

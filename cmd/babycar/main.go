@@ -3,6 +3,7 @@ package main
 import (
 	"babycare/pkg/zlog"
 	"flag"
+	"fmt"
 	"os"
 	"time"
 
@@ -17,22 +18,24 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/http"
 
 	_ "go.uber.org/automaxprocs"
+	netHttp "net/http"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name string
+	Name = "babycar"
 	// Version is the version of the compiled software.
-	Version string
+	Version = "v1.0.0"
 	// flagconf is the config flag.
 	flagconf string
-
-	id, _ = os.Hostname()
+	env      string
+	id, _    = os.Hostname()
 )
 
 func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	flag.StringVar(&env, "env", "dev", "use env, eg: -env=dev")
 }
 
 func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
@@ -48,6 +51,7 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 		),
 	)
 }
+
 
 func main() {
 	flag.Parse()
@@ -65,6 +69,7 @@ func main() {
 
 	var bc conf.Bootstrap
 	if err := c.Scan(&bc); err != nil {
+		fmt.Println("err",err)
 		panic(err)
 	}
 
@@ -81,11 +86,17 @@ func main() {
 		// 可以添加额外k,v,满足基本日志需求
 	)
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
+	app, cleanup, err := wireApp(bc.Server, bc.Data,bc.Error, logger)
 	if err != nil {
+		fmt.Println("err",err)
 		panic(err)
 	}
 	defer cleanup()
+
+	go func() {
+		_ = netHttp.ListenAndServe(":6060", nil)
+		fmt.Println("pprof start")
+	}()
 
 	// start and wait for stop signal
 	if err := app.Run(); err != nil {
