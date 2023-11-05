@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package api.tree.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "babycare/api/tree/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.tree.v1";
+
+service Tree {
+  rpc GetTree (GetTreeRequest) returns (GetTreeReply){
+    option (google.api.http) = {
+      get: "/gettree/{id}",
+    };
+  }
+}
+message  GetTreeRequest{
+  int32 id = 1;
+}
+message GetTreeReply{
+  int32 id = 1;
+  string tree = 2;
+}

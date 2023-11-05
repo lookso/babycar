@@ -6,6 +6,25 @@ info:
     title: ""
     version: 0.0.1
 paths:
+    /gettree/{id}:
+        get:
+            tags:
+                - Tree
+            operationId: Tree_GetTree
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.tree.v1.GetTreeReply'
     /getuser/{id}:
         get:
             tags:
@@ -323,8 +342,17 @@ components:
         api.car.v1.ListUserReply:
             type: object
             properties: {}
+        api.tree.v1.GetTreeReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int32
+                tree:
+                    type: string
         google.protobuf.Value:
             description: Represents a dynamically typed value which can be either null, a number, a string, a boolean, a recursive struct value, or a list of values.
 tags:
     - name: Baby
     - name: Car
+    - name: Tree

@@ -11,7 +11,6 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/plugin/dbresolver"
 )
-
 // ProviderSet is data providers.
 var ProviderSet = wire.NewSet(NewData, NewCarData, NewBabyData, NewEngineDbRw, wire.Struct(new(DataProviderCollection), "*"))
 
@@ -64,16 +63,18 @@ func NewEngineDbRw(conf *conf.Data, logger log.Logger) EngineDb {
 
 // NewData .
 func NewData(c *conf.Data, dataProvider *DataProviderCollection, logger log.Logger) (*Data, func(), error) {
-
 	logData := log.NewHelper(log.With(logger, "x_module", "data/resource"))
-
 	ormEngineDb := (*gorm.DB)(dataProvider.EngineDb)
 	cleanup := func() {
 		if ormEngineDb != nil {
-			db, _ := ormEngineDb.DB()
+			db, err := ormEngineDb.DB()
+			if err != nil {
+				log.NewHelper(logger).Errorf("database close err:%+v", err)
+			}
 			_ = db.Close()
+			log.NewHelper(logger).Info("closing the mysql")
 		}
-		logData.Info("closing the data resources")
+		logData.Info("closing the data resources success")
 	}
 
 	return &Data{

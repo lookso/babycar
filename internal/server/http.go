@@ -3,10 +3,12 @@ package server
 import (
 	babyApiV1 "babycare/api/baby/v1"
 	carApiV1 "babycare/api/car/v1"
+	treeApiV1 "babycare/api/tree/v1"
 	"babycare/internal/conf"
 	"babycare/internal/server/middleware"
 	"babycare/internal/service/baby"
 	"babycare/internal/service/car"
+	"babycare/internal/service/tree"
 	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -19,7 +21,7 @@ import (
 var errorHandle *conf.ErrorHandle
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, conf *conf.Data, errorHandler *conf.ErrorHandle,carService *car.CarService, babyService *baby.BabyService, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server, conf *conf.Data, errorHandler *conf.ErrorHandle,carService *car.CarService, babyService *baby.BabyService,treeService *tree.TreeService, logger log.Logger) *http.Server {
 	errorHandle = errorHandler
 
 	var opts = []http.ServerOption{
@@ -46,6 +48,7 @@ func NewHTTPServer(c *conf.Server, conf *conf.Data, errorHandler *conf.ErrorHand
 	srv := http.NewServer(opts...)
 	carApiV1.RegisterCarHTTPServer(srv, carService)
 	babyApiV1.RegisterBabyHTTPServer(srv, babyService)
+	treeApiV1.RegisterTreeHTTPServer(srv, treeService)
 
 	router := srv.Route("/")
 	router.GET("v1/download_comment", carService.DownloadComment)
