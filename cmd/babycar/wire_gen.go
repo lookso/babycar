@@ -28,11 +28,7 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, errorHandle *conf.ErrorHandle, logger log.Logger) (*kratos.App, func(), error) {
-	engineDb := data.NewEngineDbRw(confData, logger)
-	dataProviderCollection := &data.DataProviderCollection{
-		EngineDb: engineDb,
-	}
-	dataData, cleanup, err := data.NewData(confData, dataProviderCollection, logger)
+	dataData, cleanup, err := data.NewData(confData, logger)
 	if err != nil {
 		return nil, nil, err
 	}

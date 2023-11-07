@@ -13,9 +13,13 @@ data:
     max_open_conns: 2
     debug: true
   redis:
+    network: tcp
     addr: 127.0.0.1:6379
-    read_timeout: 0.2s
-    write_timeout: 0.2s
+    password: ""
+    db: 0
+    dial_timeout: 1s
+    read_timeout: 0.4s
+    write_timeout: 0.6s
 log:
   filename: "../../logs/babycar.log"
   max_size: 1
