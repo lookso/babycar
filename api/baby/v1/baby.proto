@@ -24,6 +24,29 @@ service Baby {
       get: "/v1/baby/getuser",
     };
   }
+  rpc GetStoryList (GetStoryListRequest) returns (GetStoryListReply) {
+    option (google.api.http) = {
+      get: "/v1/baby/storylist",
+    };
+  }
+}
+
+message GetStoryListRequest{
+  int64 last_id = 1;
+  int32 size = 2;
+}
+message GetStoryListReply{
+  message Story {
+    int64 id = 1;
+    int32 tag = 2;
+    string title = 3;
+    string content = 4;
+    string source_url = 5;
+    int32 status = 6;
+    int64 create_time = 7;
+    int64 update_time = 8;
+  }
+  repeated Story stories = 1;
 }
 
 message Null {}

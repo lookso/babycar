@@ -35,6 +35,248 @@ var (
 	_ = sort.Sort
 )
 
+// Validate checks the field values on GetStoryListRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetStoryListRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetStoryListRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetStoryListRequestMultiError, or nil if none found.
+func (m *GetStoryListRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetStoryListRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for LastId
+
+	// no validation rules for Size
+
+	if len(errors) > 0 {
+		return GetStoryListRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetStoryListRequestMultiError is an error wrapping multiple validation
+// errors returned by GetStoryListRequest.ValidateAll() if the designated
+// constraints aren't met.
+type GetStoryListRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetStoryListRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetStoryListRequestMultiError) AllErrors() []error { return m }
+
+// GetStoryListRequestValidationError is the validation error returned by
+// GetStoryListRequest.Validate if the designated constraints aren't met.
+type GetStoryListRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetStoryListRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetStoryListRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetStoryListRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetStoryListRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetStoryListRequestValidationError) ErrorName() string {
+	return "GetStoryListRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetStoryListRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetStoryListRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetStoryListRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetStoryListRequestValidationError{}
+
+// Validate checks the field values on GetStoryListReply with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *GetStoryListReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetStoryListReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetStoryListReplyMultiError, or nil if none found.
+func (m *GetStoryListReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetStoryListReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetStories() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, GetStoryListReplyValidationError{
+						field:  fmt.Sprintf("Stories[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, GetStoryListReplyValidationError{
+						field:  fmt.Sprintf("Stories[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return GetStoryListReplyValidationError{
+					field:  fmt.Sprintf("Stories[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return GetStoryListReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetStoryListReplyMultiError is an error wrapping multiple validation errors
+// returned by GetStoryListReply.ValidateAll() if the designated constraints
+// aren't met.
+type GetStoryListReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetStoryListReplyMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetStoryListReplyMultiError) AllErrors() []error { return m }
+
+// GetStoryListReplyValidationError is the validation error returned by
+// GetStoryListReply.Validate if the designated constraints aren't met.
+type GetStoryListReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetStoryListReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetStoryListReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetStoryListReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetStoryListReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetStoryListReplyValidationError) ErrorName() string {
+	return "GetStoryListReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetStoryListReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetStoryListReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetStoryListReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetStoryListReplyValidationError{}
+
 // Validate checks the field values on Null with the rules defined in the proto
 // definition for this message. If any rules are violated, the first error
 // encountered is returned, or nil if there are no violations.
@@ -1180,3 +1422,121 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetUserReplyValidationError{}
+
+// Validate checks the field values on GetStoryListReply_Story with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetStoryListReply_Story) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetStoryListReply_Story with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetStoryListReply_StoryMultiError, or nil if none found.
+func (m *GetStoryListReply_Story) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetStoryListReply_Story) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for Tag
+
+	// no validation rules for Title
+
+	// no validation rules for Content
+
+	// no validation rules for SourceUrl
+
+	// no validation rules for Status
+
+	// no validation rules for CreateTime
+
+	// no validation rules for UpdateTime
+
+	if len(errors) > 0 {
+		return GetStoryListReply_StoryMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetStoryListReply_StoryMultiError is an error wrapping multiple validation
+// errors returned by GetStoryListReply_Story.ValidateAll() if the designated
+// constraints aren't met.
+type GetStoryListReply_StoryMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetStoryListReply_StoryMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetStoryListReply_StoryMultiError) AllErrors() []error { return m }
+
+// GetStoryListReply_StoryValidationError is the validation error returned by
+// GetStoryListReply_Story.Validate if the designated constraints aren't met.
+type GetStoryListReply_StoryValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetStoryListReply_StoryValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetStoryListReply_StoryValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetStoryListReply_StoryValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetStoryListReply_StoryValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetStoryListReply_StoryValidationError) ErrorName() string {
+	return "GetStoryListReply_StoryValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetStoryListReply_StoryValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetStoryListReply_Story.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetStoryListReply_StoryValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetStoryListReply_StoryValidationError{}

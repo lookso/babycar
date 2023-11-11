@@ -20,8 +20,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Baby_Example_FullMethodName = "/api.baby.v1.Baby/Example"
-	Baby_GetUser_FullMethodName = "/api.baby.v1.Baby/GetUser"
+	Baby_Example_FullMethodName      = "/api.baby.v1.Baby/Example"
+	Baby_GetUser_FullMethodName      = "/api.baby.v1.Baby/GetUser"
+	Baby_GetStoryList_FullMethodName = "/api.baby.v1.Baby/GetStoryList"
 )
 
 // BabyClient is the client API for Baby service.
@@ -30,6 +31,7 @@ const (
 type BabyClient interface {
 	Example(ctx context.Context, in *Null, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserReply, error)
+	GetStoryList(ctx context.Context, in *GetStoryListRequest, opts ...grpc.CallOption) (*GetStoryListReply, error)
 }
 
 type babyClient struct {
@@ -58,12 +60,22 @@ func (c *babyClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...gr
 	return out, nil
 }
 
+func (c *babyClient) GetStoryList(ctx context.Context, in *GetStoryListRequest, opts ...grpc.CallOption) (*GetStoryListReply, error) {
+	out := new(GetStoryListReply)
+	err := c.cc.Invoke(ctx, Baby_GetStoryList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BabyServer is the server API for Baby service.
 // All implementations must embed UnimplementedBabyServer
 // for forward compatibility
 type BabyServer interface {
 	Example(context.Context, *Null) (*emptypb.Empty, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserReply, error)
+	GetStoryList(context.Context, *GetStoryListRequest) (*GetStoryListReply, error)
 	mustEmbedUnimplementedBabyServer()
 }
 
@@ -76,6 +88,9 @@ func (UnimplementedBabyServer) Example(context.Context, *Null) (*emptypb.Empty, 
 }
 func (UnimplementedBabyServer) GetUser(context.Context, *GetUserRequest) (*GetUserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedBabyServer) GetStoryList(context.Context, *GetStoryListRequest) (*GetStoryListReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStoryList not implemented")
 }
 func (UnimplementedBabyServer) mustEmbedUnimplementedBabyServer() {}
 
@@ -126,6 +141,24 @@ func _Baby_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Baby_GetStoryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStoryListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BabyServer).GetStoryList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Baby_GetStoryList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BabyServer).GetStoryList(ctx, req.(*GetStoryListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Baby_ServiceDesc is the grpc.ServiceDesc for Baby service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -140,6 +173,10 @@ var Baby_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUser",
 			Handler:    _Baby_GetUser_Handler,
+		},
+		{
+			MethodName: "GetStoryList",
+			Handler:    _Baby_GetStoryList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

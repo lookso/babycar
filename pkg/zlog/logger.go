@@ -1,7 +1,9 @@
 package zlog
 
 import (
+	"babycare/internal/common"
 	"context"
+	"os"
 
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
@@ -17,17 +19,20 @@ var (
 	zapContextKey ContextKey = "zapLogger"
 )
 
-func Init(project string, filename string, maxSize, maxBackUps, maxAge int, compress bool) {
+func Init(project string, env, filename string, maxSize, maxBackUps, maxAge int, compress bool) {
 	config := zap.NewProductionEncoderConfig()
 	config.EncodeTime = zapcore.ISO8601TimeEncoder
 	config.MessageKey = ""
-
 	core := zapcore.NewCore(
 		zapcore.NewJSONEncoder(config),
 		getLogWriter(filename, maxSize, maxBackUps, maxAge, compress),
 		zap.InfoLevel,
 	)
-
+	if env == common.EnvDev {
+		consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+		core = zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stdout), zapcore.DebugLevel)
+	}
+	//core := zapcore.NewTee(consoleCore,fileCore)
 	instanceOfStdLog = zap.New(core, zap.Fields(
 		zap.String("project", project),
 	),

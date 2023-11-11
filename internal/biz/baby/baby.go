@@ -15,8 +15,31 @@ type BabyBiz struct {
 	log      *log.Helper
 }
 
-func NewBabyBiz(userRepo IBabyRepo, logger log.Logger) *BabyBiz {
-	return &BabyBiz{babyRepo: userRepo, log: log.NewHelper(log.With(logger, "module", "biz/user"))}
+func NewBabyBiz(babyRepo IBabyRepo, logger log.Logger) *BabyBiz {
+	return &BabyBiz{babyRepo: babyRepo, log: log.NewHelper(log.With(logger, "module", "biz/user"))}
+}
+
+func (s *BabyBiz) GetStoryList(ctx context.Context, lastId, size int) (*pb.GetStoryListReply, error) {
+	reply := new(pb.GetStoryListReply)
+	storyList, err := s.babyRepo.GetStoryList(ctx, lastId, size)
+	if err != nil {
+		return reply, err
+	}
+	stories := make([]*pb.GetStoryListReply_Story, 0, len(storyList))
+	for _, story := range storyList {
+		stories = append(stories, &pb.GetStoryListReply_Story{
+			Id:         int64(story.ID),
+			Title:      story.Title,
+			Content:    story.Content,
+			Status:     int32(story.Status),
+			CreateTime: int64(story.CreateTime),
+			UpdateTime: int64(story.UpdateTime),
+		})
+	}
+	reply = &pb.GetStoryListReply{
+		Stories: stories,
+	}
+	return reply, nil
 }
 
 func (s *BabyBiz) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserReply, error) {
@@ -37,7 +60,7 @@ func (s *BabyBiz) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetU
 		fmt.Println("Error marshaling to JSON:", err)
 		return resp, err
 	}
-	fmt.Println(jsonBytes,string(jsonBytes))
+	fmt.Println(jsonBytes, string(jsonBytes))
 
 	resp = &pb.GetUserReply{
 		AppId: cast.ToString(id),

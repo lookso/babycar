@@ -50,3 +50,11 @@ func (s *BabyService) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.
 	resp.AccessToken = "test-BBB"
 	return resp, nil
 }
+
+func (s *BabyService) GetStoryList(ctx context.Context, req *pb.GetStoryListRequest) (*pb.GetStoryListReply, error) {
+	size := int(req.Size)
+	if size == 0 {
+		size = 10
+	}
+	return s.babyBiz.GetStoryList(ctx, int(req.LastId), size)
+}
