@@ -9,8 +9,7 @@ message Bootstrap {
   Server server = 1;
   Data data = 2;
   Log log = 3;
-  Env env = 4;
-  ErrorHandle error = 5;
+  ErrorHandle error = 4;
 }
 
 message Server {
@@ -55,9 +54,6 @@ message Log {
   int32 max_backup = 3;
   int32 max_age = 4;
   bool compress = 5;
-}
-message Env {
-  string env = 1;
 }
 
 message ErrorHandle {

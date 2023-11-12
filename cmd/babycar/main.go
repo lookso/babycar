@@ -73,7 +73,7 @@ func main() {
 		panic(err)
 	}
 
-	zlog.Init(Name,bc.Env.Env, bc.Log.Filename, int(bc.Log.MaxSize), int(bc.Log.MaxBackup), int(bc.Log.MaxAge), bc.Log.Compress)
+	zlog.Init(Name,env, bc.Log.Filename, int(bc.Log.MaxSize), int(bc.Log.MaxBackup), int(bc.Log.MaxAge), bc.Log.Compress)
 	defer zlog.Sync()
 	logger := log.With(zlog.NewZapLogger(zlog.STDInstance()),
 		"ts", log.Timestamp(time.RFC3339Nano),
