@@ -3,6 +3,7 @@ package data
 import (
 	"babycare/internal/conf"
 	"context"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 
 	// "github.com/uptrace/opentelemetry-go-extra/otelgorm"
@@ -12,19 +13,21 @@ import (
 	"github.com/google/wire"
 	//redisotel "github.com/redis/go-redis/extra/redisotel/v9"
 	"github.com/redis/go-redis/v9"
+	"go.mongodb.org/mongo-driver/mongo"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	// "gorm.io/plugin/dbresolver"
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewCarData, NewBabyData)
+var ProviderSet = wire.NewSet(NewData, NewCarData, NewBabyData, NewGeneralRepo)
 
 // Data . .
 type Data struct {
-	db  *gorm.DB
-	rdb *redis.Client
-	log *log.Helper
+	db      *gorm.DB
+	rdb     *redis.Client
+	log     *log.Helper
+	mongoDb *mongo.Client
 }
 
 func NewDb(conf *conf.Data, logger log.Logger) (db *gorm.DB, err error) {
@@ -92,6 +95,25 @@ func NewRedis(conf *conf.Data, logger log.Logger) (rdb *redis.Client, err error)
 	return rdb, nil
 }
 
+func NewMongo(conf *conf.Data, logger log.Logger) (mongoDb *mongo.Client, err error) {
+	mongoDb, err = mongo.Connect(context.Background(),
+		options.Client().
+			// 连接地址
+			ApplyURI("mongodb://ip:port").
+			// 验证参数
+			SetAuth(
+				options.Credential{
+					// 用户名
+					Username: "root",
+					// 密码
+					Password: "123456",
+				}).
+			// 设置连接数
+			SetMaxPoolSize(20),
+	)
+	return mongoDb, nil
+}
+
 // NewData .
 func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 	logData := log.NewHelper(log.With(logger, "x_module", "data/resource"))
@@ -103,10 +125,15 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	mongoDb, err := NewMongo(c, logger)
+	if err != nil {
+		return nil, nil, err
+	}
 	d := &Data{
-		db:  db,
-		rdb: rdb,
-		log: logData,
+		db:      db,
+		rdb:     rdb,
+		mongoDb: mongoDb,
+		log:     logData,
 	}
 	cleanup := func() {
 		_db, err := d.db.DB()
@@ -118,6 +145,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		_ = d.rdb.Close()
 		log.NewHelper(logger).Info("closing the redis")
 		logData.Info("closing the data resources success")
+
 	}
 	return d, cleanup, nil
 }

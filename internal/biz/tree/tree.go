@@ -13,7 +13,7 @@ type TreeBiz struct {
 }
 
 func NewTreeBiz(data *data.Data, logger log.Logger) *TreeBiz {
-	return &TreeBiz{data: data, log: log.NewHelper(log.With(logger, "module", "biz/user"))}
+	return &TreeBiz{data: data, log: log.NewHelper(log.With(logger, "module", "biz/tree"))}
 }
 
 func (s *TreeBiz) GetTree(ctx context.Context, req *pb.GetTreeRequest) (*pb.GetTreeReply, error) {

@@ -13,6 +13,7 @@ enum ErrorReason {
 	option (errors.default_code) = 500;
 	// 命名规范 服务名称_错误  error.code 尽量使用http.code来标识且符合code码含义, 需要备注什么错误，方便定位
 	DATA_SERVICE_DATA_NOT_FOUND = 0 [(errors.code) = 404];
+	PARAM_ERROR = 1 [(errors.code) = 400];
 
 }
 
