@@ -52,7 +52,6 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 	)
 }
 
-
 func main() {
 	flag.Parse()
 
@@ -69,11 +68,11 @@ func main() {
 
 	var bc conf.Bootstrap
 	if err := c.Scan(&bc); err != nil {
-		fmt.Println("err",err)
+		fmt.Println("err", err)
 		panic(err)
 	}
 
-	zlog.Init(Name,env, bc.Log.Filename, int(bc.Log.MaxSize), int(bc.Log.MaxBackup), int(bc.Log.MaxAge), bc.Log.Compress)
+	zlog.Init(Name, env, bc.Log.Filename, int(bc.Log.MaxSize), int(bc.Log.MaxBackup), int(bc.Log.MaxAge), bc.Log.Compress)
 	defer zlog.Sync()
 	logger := log.With(zlog.NewZapLogger(zlog.STDInstance()),
 		"ts", log.Timestamp(time.RFC3339Nano),
@@ -86,9 +85,9 @@ func main() {
 		// 可以添加额外k,v,满足基本日志需求
 	)
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data,bc.Error, logger)
+	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Error, logger)
 	if err != nil {
-		fmt.Println("err",err)
+		fmt.Println("err", err)
 		panic(err)
 	}
 	defer cleanup()

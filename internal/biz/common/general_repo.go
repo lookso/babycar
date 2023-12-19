@@ -1,4 +1,4 @@
-package biz
+package common
 
 import (
 	"context"
@@ -14,7 +14,7 @@ func IgnoreConflict(tx *gorm.DB) *gorm.DB {
 }
 
 type GeneralRepo interface {
-	Create(ctx context.Context, v any, scope ...func(tx *gorm.DB) *gorm.DB) error
+	Create(ctx context.Context, v any, scope ...func(tx *gorm.DB) *gorm.DB) (int64, error)
 	CreateInBatches(ctx context.Context, v any, size int) error
 
 	Get(ctx context.Context, dest schema.Tabler, id uint) error
