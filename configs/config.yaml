@@ -27,6 +27,7 @@ log:
   max_backup: 5
   max_age: 10
   compress: true
+
 error:
   default: "服务错误" #通用错误术语
   handle:

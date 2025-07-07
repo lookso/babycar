@@ -16,11 +16,10 @@ import (
 	baby2 "babycare/internal/service/baby"
 	car2 "babycare/internal/service/car"
 	tree2 "babycare/internal/service/tree"
+
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-)
 
-import (
 	_ "go.uber.org/automaxprocs"
 )
 
